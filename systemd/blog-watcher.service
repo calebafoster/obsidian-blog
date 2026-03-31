@@ -1,0 +1,15 @@
+[Unit]
+Description=Obsidian Blog File Watcher
+After=network.target
+
+[Service]
+Type=simple
+User=caleb
+WorkingDirectory=/home/caleb/blog
+EnvironmentFile=/home/caleb/blog/.env
+ExecStart=/home/caleb/blog/.venv/bin/python watcher.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
