@@ -1,0 +1,53 @@
+HOW TO RUN THE BLOG ON THIS COMPUTER
+=====================================
+
+1. Fill in your .env
+---------------------
+nano /home/caleb/Projects/obisidian-blog/.env
+
+Set these values:
+- BREVO_API_KEY     -- from your Brevo account (free tier)
+- SITE_BASE_URL     -- your machine's local IP, e.g. http://192.168.1.50
+- SENDER_EMAIL / SENDER_NAME -- the "from" address for notification emails
+- POSTS_DIR / PUBLIC_DIR / DB_PATH -- absolute paths on this machine
+
+
+2. Run the setup script
+------------------------
+cd /home/caleb/Projects/obisidian-blog
+chmod +x setup.sh
+./setup.sh
+
+This installs Python deps, sets up directories, and registers + starts two systemd services:
+- blog-watcher -- watches posts/ for new .md files, triggers build + email
+- blog-api     -- Flask server for subscribe/unsubscribe
+
+
+3. Set up nginx
+----------------
+sudo cp nginx/blog.conf /etc/nginx/sites-available/blog
+sudo ln -s /etc/nginx/sites-available/blog /etc/nginx/sites-enabled/blog
+sudo nginx -t && sudo systemctl reload nginx
+
+
+4. Verify everything is running
+---------------------------------
+systemctl status blog-watcher blog-api
+
+
+5. Do a test publish
+----------------------
+Drop a .md file into posts/ with the required frontmatter:
+
+---
+title: My First Post
+date: 2026-03-30
+---
+Hello world!
+
+Then check public/ -- it should build automatically, and nginx will serve it at your SITE_BASE_URL.
+
+
+Prerequisites (if not already installed): nginx, python3, python3-venv
+Install with:
+sudo apt install nginx python3 python3-venv
