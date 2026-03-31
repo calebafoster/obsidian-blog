@@ -23,8 +23,8 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
 class CalloutPreprocessor(preprocessors.Preprocessor):
     """Converts Obsidian callouts to <div class="callout callout-TYPE"> blocks."""
 
-    CALLOUT_RE = re.compile(r'^\s*>\s*\[!(\w+)\]\s*$')
-    CONTENT_RE = re.compile(r'^\s*>\s?(.*)$')
+    CALLOUT_RE = re.compile(r'^\s*>\s*\[!([\w-]+)\]\s*$')
+    CONTENT_RE = re.compile(r'^\s*>\s*(.*)$')
 
     def run(self, lines: list[str]) -> list[str]:
         new_lines = []
@@ -36,6 +36,8 @@ class CalloutPreprocessor(preprocessors.Preprocessor):
                 new_lines.append(f'<div class="callout callout-{callout_type}">')
                 i += 1
                 while i < len(lines):
+                    if self.CALLOUT_RE.match(lines[i]):
+                        break  # Start of a new callout — stop consuming content
                     content_match = self.CONTENT_RE.match(lines[i])
                     if content_match:
                         new_lines.append(content_match.group(1))
