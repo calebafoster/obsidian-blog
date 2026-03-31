@@ -5,7 +5,7 @@ from markdown.extensions.toc import TocExtension
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """Split YAML frontmatter from body. Returns (meta_dict, body_string)."""
-    match = re.match(r'^---\s*\n(.*?)\n---\s*\n', content, re.DOTALL)
+    match = re.match(r'^---\s*\n(.*?)\n---\s*(?:\n|$)', content, re.DOTALL)
     if not match:
         return {}, content
     meta = yaml.safe_load(match.group(1)) or {}

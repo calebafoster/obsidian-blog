@@ -27,3 +27,10 @@ def test_render_markdown_returns_html():
     assert "<h1" in html
     assert "Hello" in html
     assert "<p>" in html
+
+def test_parse_frontmatter_no_frontmatter():
+    from build import parse_frontmatter
+    content = "Just plain body text with no frontmatter."
+    meta, body = parse_frontmatter(content)
+    assert meta == {}
+    assert body == content
