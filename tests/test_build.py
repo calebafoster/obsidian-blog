@@ -34,3 +34,22 @@ def test_parse_frontmatter_no_frontmatter():
     meta, body = parse_frontmatter(content)
     assert meta == {}
     assert body == content
+
+def test_callout_note_renders_div():
+    from build import render_markdown
+    md = "> [!note]\n> This is a note."
+    html = render_markdown(md)
+    assert 'class="callout callout-note"' in html
+    assert "This is a note." in html
+
+def test_callout_warning_renders_div():
+    from build import render_markdown
+    md = "> [!warning]\n> Watch out."
+    html = render_markdown(md)
+    assert 'class="callout callout-warning"' in html
+
+def test_callout_unknown_type_renders_div():
+    from build import render_markdown
+    md = "> [!custom]\n> Custom callout."
+    html = render_markdown(md)
+    assert 'class="callout callout-custom"' in html
