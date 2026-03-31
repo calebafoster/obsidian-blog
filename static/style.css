@@ -1,0 +1,195 @@
+/* Rose Pine dark — base palette */
+:root {
+  --base:    #191724;
+  --surface: #1f1d2e;
+  --overlay: #26233a;
+  --muted:   #6e6a86;
+  --subtle:  #908caa;
+  --text:    #e0def4;
+  --love:    #eb6f92;
+  --gold:    #f6c177;
+  --rose:    #ebbcba;
+  --pine:    #31748f;
+  --foam:    #9ccfd8;
+  --iris:    #c4a7e7;
+
+  --font-sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Fira Code", "Cascadia Code", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Navigation */
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--overlay);
+}
+.site-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--iris);
+  text-decoration: none;
+}
+.nav-links a {
+  margin-left: 1.5rem;
+  color: var(--subtle);
+  text-decoration: none;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* Post layout */
+.post-layout {
+  display: flex;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.post-body {
+  flex: 1;
+  max-width: 680px;
+  min-width: 0;
+}
+
+.post-body h1 { font-size: 2rem; color: var(--text); margin-bottom: 0.25rem; }
+.post-meta { color: var(--subtle); font-size: 0.9rem; margin-bottom: 2rem; }
+
+.post-body h2, .post-body h3, .post-body h4 {
+  color: var(--iris);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.post-body p { margin-bottom: 1rem; }
+
+.post-body a { color: var(--foam); }
+.post-body a:hover { color: var(--pine); }
+
+.post-body ul, .post-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.post-body code {
+  background: var(--overlay);
+  color: var(--rose);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.post-body pre {
+  background: var(--surface);
+  border: 1px solid var(--overlay);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.post-body pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+/* TOC panel */
+.toc-panel {
+  position: sticky;
+  top: 4rem;
+  align-self: flex-start;
+  width: 220px;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: var(--subtle);
+}
+.toc-title {
+  font-weight: 600;
+  color: var(--iris);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+.toc-panel a { color: var(--subtle); text-decoration: none; display: block; padding: 0.15rem 0; }
+.toc-panel a:hover { color: var(--text); }
+.toc-panel ul { list-style: none; padding-left: 0.75rem; }
+
+/* Post list (index) */
+.post-list {
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+.post-list h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--iris); }
+.post-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--overlay);
+}
+.post-card-title { color: var(--text); text-decoration: none; font-size: 1rem; }
+.post-card-title:hover { color: var(--iris); }
+.post-card-date { color: var(--subtle); font-size: 0.85rem; }
+
+/* Callouts */
+.callout {
+  border-left: 4px solid var(--iris);
+  background: var(--surface);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+.callout-note, .callout-info  { border-color: var(--iris); }
+.callout-tip,  .callout-success { border-color: var(--pine); }
+.callout-warning, .callout-caution { border-color: var(--gold); color: var(--gold); }
+.callout-danger, .callout-error { border-color: var(--love); color: var(--love); }
+
+/* Confirm pages */
+.confirm-page {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+.confirm-page h1 { color: var(--iris); margin-bottom: 1rem; }
+.confirm-page a { color: var(--foam); }
+
+/* Subscribe form (embedded on index or subscribe page) */
+.subscribe-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+.subscribe-form input[type="email"] {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--overlay);
+  color: var(--text);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+}
+.subscribe-form button {
+  padding: 0.5rem 1rem;
+  background: var(--iris);
+  color: var(--base);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subscribe-form button:hover { background: var(--foam); }
