@@ -73,3 +73,56 @@ def test_non_embed_markdown_unchanged():
     md = "Normal **bold** text."
     html = render_markdown(md)
     assert "<strong>bold</strong>" in html
+
+import os
+import tempfile
+
+def _make_post_file(tmp_path, slug, content):
+    post_path = tmp_path / "posts" / f"{slug}.md"
+    post_path.parent.mkdir(parents=True, exist_ok=True)
+    post_path.write_text(content)
+    return post_path
+
+def test_build_post_writes_html_file(tmp_path, monkeypatch):
+    import importlib
+    monkeypatch.setenv("POSTS_DIR", str(tmp_path / "posts"))
+    monkeypatch.setenv("PUBLIC_DIR", str(tmp_path / "public"))
+    monkeypatch.setenv("DB_PATH", str(tmp_path / "test.db"))
+    # Remaining config vars (unused by build but required by config module)
+    for k in ("BREVO_API_KEY", "SITE_BASE_URL", "SENDER_EMAIL", "SENDER_NAME"):
+        monkeypatch.setenv(k, "x")
+    import config
+    importlib.reload(config)
+
+    _make_post_file(tmp_path, "hello-world", "---\ntitle: Hello World\ndate: 2026-03-30\n---\n# Hello\n\nWorld.")
+
+    from build import build_all
+    build_all()
+
+    output = tmp_path / "public" / "posts" / "hello-world.html"
+    assert output.exists()
+    html = output.read_text()
+    assert "Hello World" in html
+    assert "<h1" in html
+
+def test_build_all_writes_index(tmp_path, monkeypatch):
+    import importlib
+    monkeypatch.setenv("POSTS_DIR", str(tmp_path / "posts"))
+    monkeypatch.setenv("PUBLIC_DIR", str(tmp_path / "public"))
+    monkeypatch.setenv("DB_PATH", str(tmp_path / "test.db"))
+    for k in ("BREVO_API_KEY", "SITE_BASE_URL", "SENDER_EMAIL", "SENDER_NAME"):
+        monkeypatch.setenv(k, "x")
+    import config
+    importlib.reload(config)
+
+    _make_post_file(tmp_path, "first-post", "---\ntitle: First Post\ndate: 2026-01-01\n---\nContent.")
+    _make_post_file(tmp_path, "second-post", "---\ntitle: Second Post\ndate: 2026-02-01\n---\nContent.")
+
+    from build import build_all
+    build_all()
+
+    index = tmp_path / "public" / "index.html"
+    assert index.exists()
+    html = index.read_text()
+    assert "First Post" in html
+    assert "Second Post" in html

@@ -1,10 +1,13 @@
 import os
 import re
+import shutil
 import yaml
 import markdown
+from pathlib import Path
 from markdown import preprocessors
 from markdown.extensions import Extension
 from markdown.extensions.toc import TocExtension
+from jinja2 import Environment, FileSystemLoader
 
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
@@ -94,3 +97,91 @@ def render_markdown(text: str) -> str:
         "fenced_code",
     ])
     return md.convert(text)
+
+
+def _get_jinja_env() -> Environment:
+    templates_dir = Path(__file__).parent / "templates"
+    return Environment(loader=FileSystemLoader(str(templates_dir)), autoescape=False)
+
+
+def build_post(md_path: Path, conn) -> dict:
+    """Parse, render, and write a single post. Returns post metadata dict."""
+    import config
+    raw = md_path.read_text()
+    meta, body = parse_frontmatter(raw)
+    slug = md_path.stem
+
+    md_obj = markdown.Markdown(extensions=[
+        TocExtension(baselevel=1),
+        CalloutExtension(),
+        EmbedExtension(),
+        "pymdownx.superfences",
+        "tables",
+        "fenced_code",
+    ])
+    html_content = md_obj.convert(body)
+    toc = md_obj.toc
+
+    out_dir = Path(config.PUBLIC_DIR) / "posts"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    env = _get_jinja_env()
+    tmpl = env.get_template("post.html")
+    post = {
+        "slug": slug,
+        "title": meta.get("title", slug),
+        "date": str(meta.get("date", "")),
+        "toc": toc,
+        "html_content": html_content,
+    }
+    page_html = tmpl.render(post=post, site_name="Blog")
+    (out_dir / f"{slug}.html").write_text(page_html)
+
+    try:
+        conn.execute(
+            "INSERT OR IGNORE INTO posts (slug, title, date) VALUES (?, ?, ?)",
+            (slug, post["title"], post["date"]),
+        )
+        conn.commit()
+    except Exception:
+        pass
+
+    return post
+
+
+def build_all() -> None:
+    """Build every .md in POSTS_DIR and regenerate index.html."""
+    import config
+    import db
+    posts_dir = Path(config.POSTS_DIR)
+    public_dir = Path(config.PUBLIC_DIR)
+    public_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy assets
+    assets_src = posts_dir / "assets"
+    assets_dst = public_dir / "assets"
+    if assets_src.exists():
+        if assets_dst.exists():
+            shutil.rmtree(assets_dst)
+        shutil.copytree(assets_src, assets_dst)
+
+    conn = db.get_connection(config.DB_PATH)
+    db.init_db(conn)
+
+    posts = []
+    for md_file in sorted(posts_dir.glob("*.md")):
+        post = build_post(md_file, conn)
+        posts.append(post)
+
+    conn.close()
+
+    # Sort newest first
+    posts.sort(key=lambda p: p["date"], reverse=True)
+
+    env = _get_jinja_env()
+    index_html = env.get_template("index.html").render(posts=posts, site_name="Blog")
+    (public_dir / "index.html").write_text(index_html)
+
+
+if __name__ == "__main__":
+    build_all()
