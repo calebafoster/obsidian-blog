@@ -1,7 +1,8 @@
 .env
 posts/
 public/
-subscribers.db
+*.db
 __pycache__/
 *.pyc
 .pytest_cache/
+.venv/
