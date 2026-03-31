@@ -165,6 +165,14 @@ def build_all() -> None:
             shutil.rmtree(assets_dst)
         shutil.copytree(assets_src, assets_dst)
 
+    # Copy static assets (CSS, etc.)
+    static_src = Path(__file__).parent / "static"
+    static_dst = public_dir / "static"
+    if static_src.exists():
+        if static_dst.exists():
+            shutil.rmtree(static_dst)
+        shutil.copytree(static_src, static_dst)
+
     conn = db.get_connection(config.DB_PATH)
     db.init_db(conn)
 

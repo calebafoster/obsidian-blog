@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Subscribe{% endblock %}
+{% block content %}
+<div class="confirm-page">
+  <h1>Subscribe</h1>
+  <p>Get an email when new posts are published.</p>
+  <form class="subscribe-form" action="/subscribe" method="post">
+    <input type="email" name="email" placeholder="your@email.com" required>
+    <button type="submit">Subscribe</button>
+  </form>
+</div>
+{% endblock %}

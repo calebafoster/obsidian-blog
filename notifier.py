@@ -43,7 +43,7 @@ def notify_post(slug: str) -> None:
                 timeout=10,
             )
             if resp.status_code not in (200, 201, 202):
-                raise RuntimeError(f"Brevo error {resp.status_code}: {resp.text}")
+                print(f"[notifier] Warning: Brevo error for {sub['email']}: {resp.status_code}", flush=True)
 
         conn.execute("UPDATE posts SET notified = 1 WHERE slug = ?", (slug,))
         conn.commit()

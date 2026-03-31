@@ -10,6 +10,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import config
 
+SCRIPT_DIR = Path(__file__).parent
+
 
 class PostHandler(FileSystemEventHandler):
     def on_created(self, event):
@@ -21,13 +23,13 @@ class PostHandler(FileSystemEventHandler):
         slug = path.stem
         print(f"[watcher] New post detected: {slug}", flush=True)
         try:
-            subprocess.run([sys.executable, "build.py"], check=True)
+            subprocess.run([sys.executable, str(SCRIPT_DIR / "build.py")], check=True)
             print(f"[watcher] Build complete.", flush=True)
         except subprocess.CalledProcessError as e:
             print(f"[watcher] Build failed: {e}", flush=True)
             return
         try:
-            subprocess.run([sys.executable, "notifier.py", slug], check=True)
+            subprocess.run([sys.executable, str(SCRIPT_DIR / "notifier.py"), slug], check=True)
             print(f"[watcher] Notifications sent for {slug}.", flush=True)
         except subprocess.CalledProcessError as e:
             print(f"[watcher] Notify failed: {e}", flush=True)

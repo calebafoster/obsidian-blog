@@ -10,6 +10,10 @@ def _get_conn():
     db.init_db(conn)
     return conn
 
+@app.route("/subscribe", methods=["GET"])
+def subscribe_page():
+    return render_template("subscribe.html", site_name="Blog")
+
 @app.route("/subscribe", methods=["POST"])
 def subscribe():
     email = request.form.get("email", "").strip().lower()
