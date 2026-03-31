@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<div class="post-layout">
+  <article class="post-body">
+    <h1>{{ post.title }}</h1>
+    <p class="post-meta">{{ post.date }}</p>
+    {{ post.html_content | safe }}
+  </article>
+  {% if post.toc %}
+  <aside class="toc-panel">
+    <div class="toc-title">Contents</div>
+    {{ post.toc | safe }}
+  </aside>
+  {% endif %}
+</div>
+{% endblock %}
