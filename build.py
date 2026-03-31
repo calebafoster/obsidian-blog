@@ -56,11 +56,39 @@ class CalloutExtension(Extension):
         md.preprocessors.register(CalloutPreprocessor(md), 'obsidian_callout', 175)
 
 
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}
+
+
+class EmbedPreprocessor(preprocessors.Preprocessor):
+    """Converts ![[filename]] Obsidian embeds to <img> or <a> tags."""
+
+    EMBED_RE = re.compile(r'!\[\[([^\]]+)\]\]')
+
+    def run(self, lines: list[str]) -> list[str]:
+        new_lines = []
+        for line in lines:
+            def replace(m):
+                filename = m.group(1).strip()
+                ext = os.path.splitext(filename)[1].lower()
+                url = f"/assets/{filename}"
+                if ext in IMAGE_EXTENSIONS:
+                    return f'<img src="{url}" alt="{filename}">'
+                return f'<a href="{url}">{filename}</a>'
+            new_lines.append(self.EMBED_RE.sub(replace, line))
+        return new_lines
+
+
+class EmbedExtension(Extension):
+    def extendMarkdown(self, md):
+        md.preprocessors.register(EmbedPreprocessor(md), 'obsidian_embed', 176)
+
+
 def render_markdown(text: str) -> str:
     """Render Markdown string to HTML with Obsidian extensions."""
     md = markdown.Markdown(extensions=[
         TocExtension(baselevel=1),
         CalloutExtension(),
+        EmbedExtension(),
         "pymdownx.superfences",
         "tables",
         "fenced_code",

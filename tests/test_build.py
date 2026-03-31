@@ -53,3 +53,23 @@ def test_callout_unknown_type_renders_div():
     md = "> [!custom]\n> Custom callout."
     html = render_markdown(md)
     assert 'class="callout callout-custom"' in html
+
+def test_image_embed_renders_img_tag():
+    from build import render_markdown
+    md = "![[photo.png]]"
+    html = render_markdown(md)
+    assert '<img' in html
+    assert 'src="/assets/photo.png"' in html
+
+def test_file_embed_renders_anchor_tag():
+    from build import render_markdown
+    md = "![[document.pdf]]"
+    html = render_markdown(md)
+    assert '<a' in html
+    assert 'href="/assets/document.pdf"' in html
+
+def test_non_embed_markdown_unchanged():
+    from build import render_markdown
+    md = "Normal **bold** text."
+    html = render_markdown(md)
+    assert "<strong>bold</strong>" in html
