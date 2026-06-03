@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-User=caleb
-WorkingDirectory=/home/caleb/blog
-EnvironmentFile=/home/caleb/blog/.env
-ExecStart=/home/caleb/blog/.venv/bin/python watcher.py
+User=orangepi
+WorkingDirectory=/home/orangepi/blog-app/obsidian-blog
+EnvironmentFile=/home/orangepi/blog-app/obsidian-blog/.env
+ExecStart=/home/orangepi/blog-app/obsidian-blog/.venv/bin/python watcher.py
 Restart=on-failure
 RestartSec=5
 
