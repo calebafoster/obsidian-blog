@@ -14,10 +14,10 @@ python3 -m venv "$BLOG_DIR/.venv"
 mkdir -p "$BLOG_DIR/posts/assets"
 mkdir -p "$BLOG_DIR/public/assets"
 
-# Copy .env if it doesn't exist
+# Copy .env if it doesn't exist, substituting actual paths
 if [ ! -f "$BLOG_DIR/.env" ]; then
-    cp "$BLOG_DIR/.env.example" "$BLOG_DIR/.env"
-    echo "Created .env from .env.example — fill in your secrets before starting services."
+    sed "s|BLOG_DIR|$BLOG_DIR|g" "$BLOG_DIR/.env.example" > "$BLOG_DIR/.env"
+    echo "Created .env from .env.example — fill in BREVO_API_KEY, SITE_BASE_URL, SENDER_EMAIL, SENDER_NAME before starting services."
 fi
 
 BLOG_USER="$(whoami)"
