@@ -130,6 +130,7 @@ def build_post(md_path: Path, conn) -> dict:
     post = {
         "slug": slug,
         "title": meta.get("title", slug),
+        "subtitle": meta.get("subtitle", ""),
         "date": str(meta.get("date", "")),
         "toc": toc,
         "html_content": html_content,

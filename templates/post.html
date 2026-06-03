@@ -4,6 +4,7 @@
 <div class="post-layout">
   <article class="post-body">
     <h1>{{ post.title }}</h1>
+    {% if post.subtitle %}<p class="post-subtitle">{{ post.subtitle }}</p>{% endif %}
     <p class="post-meta">{{ post.date }}</p>
     {{ post.html_content | safe }}
   </article>
