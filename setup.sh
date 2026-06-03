@@ -20,9 +20,9 @@ if [ ! -f "$BLOG_DIR/.env" ]; then
     echo "Created .env from .env.example — fill in your secrets before starting services."
 fi
 
-# Install and enable systemd services
-sudo cp "$BLOG_DIR/systemd/blog-watcher.service" /etc/systemd/system/
-sudo cp "$BLOG_DIR/systemd/blog-api.service" /etc/systemd/system/
+# Install and enable systemd services (substitute actual project path)
+sed "s|/home/caleb/blog|$BLOG_DIR|g" "$BLOG_DIR/systemd/blog-watcher.service" | sudo tee /etc/systemd/system/blog-watcher.service > /dev/null
+sed "s|/home/caleb/blog|$BLOG_DIR|g" "$BLOG_DIR/systemd/blog-api.service" | sudo tee /etc/systemd/system/blog-api.service > /dev/null
 sudo systemctl daemon-reload
 sudo systemctl enable --now blog-watcher blog-api
 
