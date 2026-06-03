@@ -159,6 +159,12 @@ body {
 .callout-warning, .callout-caution { border-color: var(--gold); color: var(--gold); }
 .callout-danger, .callout-error { border-color: var(--love); color: var(--love); }
 
+/* Mobile */
+@media (max-width: 768px) {
+  .toc-panel { display: none; }
+  .post-body { max-width: 100%; }
+}
+
 /* Confirm pages */
 .confirm-page {
   max-width: 480px;
