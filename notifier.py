@@ -20,6 +20,7 @@ def notify_post(slug: str) -> None:
         subscribers = conn.execute("SELECT email, token FROM subscribers").fetchall()
         post_url = f"{config.SITE_BASE_URL}/posts/{slug}"
 
+        all_sent = True
         for sub in subscribers:
             unsubscribe_url = f"{config.SITE_BASE_URL}/unsubscribe?token={sub['token']}"
             html_body = f"""
@@ -43,10 +44,12 @@ def notify_post(slug: str) -> None:
                 timeout=10,
             )
             if resp.status_code not in (200, 201, 202):
-                print(f"[notifier] Warning: Brevo error for {sub['email']}: {resp.status_code}", flush=True)
+                print(f"[notifier] Warning: Brevo error for {sub['email']}: {resp.status_code} {resp.text}", flush=True)
+                all_sent = False
 
-        conn.execute("UPDATE posts SET notified = 1 WHERE slug = ?", (slug,))
-        conn.commit()
+        if all_sent:
+            conn.execute("UPDATE posts SET notified = 1 WHERE slug = ?", (slug,))
+            conn.commit()
     finally:
         conn.close()
 
