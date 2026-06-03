@@ -30,6 +30,9 @@ done
 sudo systemctl daemon-reload
 sudo systemctl enable --now blog-watcher blog-api
 
+# Allow nginx (www-data) to traverse the home directory to serve static files
+chmod o+x "$HOME"
+
 # Deploy nginx config
 sed "s|BLOG_DIR|$BLOG_DIR|g" "$BLOG_DIR/nginx/blog.conf" \
     | sudo tee /etc/nginx/sites-enabled/blog.conf > /dev/null
